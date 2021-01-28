@@ -10,9 +10,10 @@ const cacheName = "static-cache";
 const dataCacheName = "data-cache";
 
 self.addEventListener("install", event => {
+    //
     event.waitUntil(
-        caches.open(cacheName)
-        .then(cache => {
+        caches.open(cacheName).then(cache => {
+            console.log("Cache opened.")
             return cache.addAll(cachedFiles);
         })
     );
