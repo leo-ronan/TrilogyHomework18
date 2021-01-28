@@ -3,42 +3,26 @@ const cachedFiles = [
     "/index.js",
     "/index.html",
     "/style.css",
-    "./models/../database.js"
+    "/db.js/"
 ];
 
-const cacheName = "static-cache";
-const dataCacheName = "data-cache";
+var CACHE_NAME = "static-cache";
+const DATA_CACHE_NAME = "data-cache";
 
 self.addEventListener("install", event => {
     //
     event.waitUntil(
-        caches.open(cacheName).then(cache => {
+        caches.open(CACHE_NAME).then(cache => {
             console.log("Cache opened.")
             return cache.addAll(cachedFiles);
         })
     );
 });
 
-self.addEventListener("activate", event => {
-    event.waitUntil(
-        caches.keys().then(cacheKeys => {
-            return Promise.all(
-                cacheKeys.map(key => {
-                    if (key != cacheName && key != dataCacheName) {
-                        return caches.delete(key);
-                    }
-                })
-            );
-        })
-    );
-
-    self.clients.claim();
-});
-
 self.addEventListener("fetch",  event => {
     if (event.request.url.includes("/api/")) {
         evt.respondWith(
-            caches.open(dataCacheName).then(cache => {
+            caches.open(DATA_CACHE_NAME).then(cache => {
                 return fetch(event.request)
                     .then(response => {
                         if (response.status === 200) {
@@ -51,7 +35,7 @@ self.addEventListener("fetch",  event => {
         return;
     }
     event.respondWith(
-        caches.open(cacheName).then(cache => {
+        caches.open(CACHE_NAME).then(cache => {
             return cache.match(event.request).then(response => {
                 return response;
             });
