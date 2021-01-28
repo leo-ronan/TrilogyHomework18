@@ -28,16 +28,16 @@ request.onsuccess = ({ target }) => {
 function saveRecord(record) {
     //Creates a transaction with readwrite access for the pending db
     const transaction = db.transaction(["pending"], "readwrite");
-    //Accesses pending store object
+    //Accesses pending object store
     const store = transaction.objectStore("pending");
-    //Adds recird to store object
+    //Adds recird to object store
     store.add(record);
 }
 
 function checkDatabase() {
     const transaction = db.transaction(["pending"], "readwrite");
     const store = transaction.objectStore("pending");
-    //Save all records from store
+    //Save all records from object store
     const getAll = store.getAll();
     getAll.onsuccess = function() {
         let res = getAll.result;
@@ -56,6 +56,7 @@ function checkDatabase() {
             .then(() => {
                 const transaction = db.transaction(["pending"], "readwrite");
                 const store = transaction.objectStore("pending");
+                //Deletes records on success
                 store.clear();
             });
         }
