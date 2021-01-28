@@ -23,6 +23,12 @@ request.onsuccess = ({ target }) => {
     }
 };
 
+function save(data) {
+    const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.objectScore("pending");
+    store.add(data);
+}
+
 function checkDatabase() {
     const transaction = db.transaction(["pending"], "readwrite");
     const store = transaction.objectScore("pending");
@@ -32,7 +38,7 @@ function checkDatabase() {
         if (res.length > 0) {
             fetch("/api/transaction/bulk", {
                 method: "POST",
-                body: res,
+                body: JSON.stringify(res),
                 headers: {
                     Accept: "application/json, text/plain, */*",
                     "Content-Type": "application/json"
@@ -48,10 +54,4 @@ function checkDatabase() {
     }
 }
 
-function save(data) {
-    const transaction = db.transaction(["pending"], "readwrite");
-    const store = transaction.objectScore("pending");
-    store.add(data);
-}
-
-window.addEventListener("online", checkDB);
+window.addEventListener("online", checkDatabase);
